@@ -10,7 +10,35 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import YogaPlan from "@/components/YogaPlan";
 import DietPlan from "@/components/DietPlan";
-import { Heart, User, LogOut, Edit, Target, Award, TrendingUp, Dumbbell, Apple, Flower2, Star, Clock } from "lucide-react";
+import { Heart, User, LogOut, Edit, Target, Award, TrendingUp, Dumbbell, Apple, Flower2, Star, Clock, Utensils } from "lucide-react";
+
+// Import meal plan logic to ensure consistency
+const getMealPlan = (dietType: string, day: string, preferredMealTimes: string[], allergies: string[]) => {
+  const isVegetarian = dietType === 'vegetarian' || dietType === 'vegan' || dietType === 'jain';
+  const hasNutAllergy = allergies.includes('nuts');
+  const hasDairyAllergy = allergies.includes('dairy');
+  
+  const dailyMealPlans = {
+    Monday: {
+      vegetarian: {
+        "Morning": { name: "Oats Upma", calories: 280, time: "7:00 AM", ingredients: "Steel-cut oats, mixed vegetables, curry leaves, mustard seeds", icon: "🥣" },
+        "Afternoon": { name: "Dal Rice Combo", calories: 420, time: "1:00 PM", ingredients: hasDairyAllergy ? "Toor dal, brown rice, ghee alternative" : "Toor dal, basmati rice, yogurt", icon: "🍛" },
+        "Evening": { name: "Quinoa Salad", calories: 350, time: "7:30 PM", ingredients: "Quinoa, cucumber, tomatoes, olive oil dressing", icon: "🥗" }
+      },
+      nonVegetarian: {
+        "Morning": { name: "Scrambled Eggs", calories: 320, time: "7:00 AM", ingredients: "2 whole eggs, whole wheat toast, spinach", icon: "🍳" },
+        "Afternoon": { name: "Chicken Rice Bowl", calories: 480, time: "1:00 PM", ingredients: "Grilled chicken, brown rice, vegetables", icon: "🍗" },
+        "Evening": { name: "Fish Curry", calories: 400, time: "7:30 PM", ingredients: "Fish fillet, coconut curry, steamed rice", icon: "🐟" }
+      }
+    }
+  };
+
+  const baseMeals = isVegetarian ? 
+    dailyMealPlans.Monday.vegetarian :
+    dailyMealPlans.Monday.nonVegetarian;
+  
+  return baseMeals;
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -55,6 +83,10 @@ const Dashboard = () => {
     preferredMealTimes: ["Morning", "Afternoon", "Evening"],
     mealPreference: "moderate"
   };
+
+  // Get today's meals using the same logic as DietPlan component
+  const todaysMeals = getMealPlan(userData.dietType, "Monday", userData.preferredMealTimes, userData.allergies);
+  const nextMeal = Object.values(todaysMeals)[0]; // Get first meal for today's activities
 
   // Calculate goal progress based on weight progress
   const calculateGoalProgress = () => {
@@ -386,9 +418,19 @@ const Dashboard = () => {
                         <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
                           <Apple className="w-6 h-6 text-green-600" />
                         </div>
-                        <div>
-                          <h3 className="font-semibold text-green-800">Follow Diet Plan</h3>
-                          <p className="text-sm text-green-600">Stick to your meal plan for the day</p>
+                        <div className="flex-1">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold text-green-800">Today's Diet Plan</h3>
+                            <Badge variant="secondary" className="bg-green-100 text-green-700">
+                              <Utensils className="w-3 h-3 mr-1" />
+                              {userData.dietType}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-green-600 mb-2">Next: {nextMeal.name} at {nextMeal.time}</p>
+                          <div className="flex items-center text-xs text-green-600">
+                            <span className="mr-2">{nextMeal.icon}</span>
+                            <span>{nextMeal.calories} cal • {nextMeal.ingredients.split(',')[0]}</span>
+                          </div>
                         </div>
                       </div>
                     </CardContent>
