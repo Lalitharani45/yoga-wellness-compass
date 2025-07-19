@@ -26,110 +26,139 @@ const getMealPlan = (dietType: string, day: string, preferredMealTimes: string[]
   const hasNutAllergy = allergies.includes('nuts');
   const hasDairyAllergy = allergies.includes('dairy');
   
-  // Create different meals for each day
-  const dayVariations = {
-    Monday: { suffix: "", variant: 0 },
-    Tuesday: { suffix: " with Herbs", variant: 1 },
-    Wednesday: { suffix: " Bowl", variant: 2 },
-    Thursday: { suffix: " Delight", variant: 3 },
-    Friday: { suffix: " Special", variant: 4 },
-    Saturday: { suffix: " Feast", variant: 5 },
-    Sunday: { suffix: " Sunday", variant: 6 }
-  };
-  
-  const dayInfo = dayVariations[day as keyof typeof dayVariations] || dayVariations.Monday;
-  
-  const allVegetarianMeals: Record<string, Meal> = {
-    "Early Morning": {
-      name: `${dayInfo.variant % 2 === 0 ? "Lemon Water with Honey" : "Warm Turmeric Water"}${dayInfo.suffix}`,
-      calories: 50,
-      time: "6:00 AM",
-      ingredients: hasNutAllergy ? "Warm water, lemon juice, honey" : "Warm water, turmeric, ginger, honey",
-      icon: dayInfo.variant % 2 === 0 ? "🍯" : "💛"
+  // Completely different meals for each day
+  const dailyMealPlans = {
+    Monday: {
+      vegetarian: {
+        "Early Morning": { name: "Lemon Honey Water", calories: 50, time: "6:00 AM", ingredients: "Warm water, fresh lemon, honey", icon: "🍯" },
+        "Morning": { name: "Oats Upma", calories: 280, time: "7:00 AM", ingredients: "Steel-cut oats, mixed vegetables, curry leaves, mustard seeds", icon: "🥣" },
+        "Mid-Morning": { name: "Mixed Nuts Bowl", calories: 150, time: "10:00 AM", ingredients: hasNutAllergy ? "Sunflower seeds, pumpkin seeds" : "Almonds, walnuts, dates", icon: hasNutAllergy ? "🌻" : "🥜" },
+        "Afternoon": { name: "Dal Rice Combo", calories: 420, time: "1:00 PM", ingredients: hasDairyAllergy ? "Toor dal, brown rice, ghee alternative" : "Toor dal, basmati rice, yogurt", icon: "🍛" },
+        "Evening": { name: "Quinoa Salad", calories: 350, time: "7:30 PM", ingredients: "Quinoa, cucumber, tomatoes, olive oil dressing", icon: "🥗" },
+        "Night": { name: "Turmeric Milk", calories: 80, time: "10:00 PM", ingredients: hasDairyAllergy ? "Almond milk, turmeric, honey" : "Warm milk, turmeric, honey", icon: "🥛" }
+      },
+      nonVegetarian: {
+        "Early Morning": { name: "Lemon Honey Water", calories: 50, time: "6:00 AM", ingredients: "Warm water, fresh lemon, honey", icon: "🍯" },
+        "Morning": { name: "Scrambled Eggs", calories: 320, time: "7:00 AM", ingredients: "2 whole eggs, whole wheat toast, spinach", icon: "🍳" },
+        "Mid-Morning": { name: "Greek Yogurt", calories: 180, time: "10:00 AM", ingredients: "Greek yogurt, berries, honey", icon: "🫐" },
+        "Afternoon": { name: "Chicken Rice Bowl", calories: 480, time: "1:00 PM", ingredients: "Grilled chicken, brown rice, vegetables", icon: "🍗" },
+        "Evening": { name: "Fish Curry", calories: 400, time: "7:30 PM", ingredients: "Fish fillet, coconut curry, steamed rice", icon: "🐟" },
+        "Night": { name: "Herbal Tea", calories: 30, time: "10:00 PM", ingredients: "Chamomile tea, honey", icon: "🍵" }
+      }
     },
-    "Morning": {
-      name: `${["Oats Poha", "Upma", "Idli Sambar", "Dosa", "Quinoa Porridge", "Ragi Dosa", "Vegetable Paratha"][dayInfo.variant]}${dayInfo.suffix}`,
-      calories: 280 + (dayInfo.variant * 10),
-      time: "7:00 AM",
-      ingredients: hasDairyAllergy ? "Oats, vegetables, spices (dairy-free)" : "1/2 cup oats, vegetables, spices, herbal tea",
-      icon: ["🥣", "🍲", "🥞", "🌯", "🥣", "🥞", "🫓"][dayInfo.variant]
+    Tuesday: {
+      vegetarian: {
+        "Early Morning": { name: "Green Tea", calories: 40, time: "6:00 AM", ingredients: "Green tea, ginger, lemon", icon: "🍃" },
+        "Morning": { name: "Poha", calories: 300, time: "7:00 AM", ingredients: "Flattened rice, peanuts, curry leaves, turmeric", icon: "🍚" },
+        "Mid-Morning": { name: "Fruit Smoothie", calories: 160, time: "10:00 AM", ingredients: "Banana, mango, coconut water", icon: "🥤" },
+        "Afternoon": { name: "Rajma Rice", calories: 450, time: "1:00 PM", ingredients: "Kidney beans curry, jeera rice, pickle", icon: "🫘" },
+        "Evening": { name: "Vegetable Stir Fry", calories: 320, time: "7:30 PM", ingredients: "Mixed vegetables, tofu, brown rice", icon: "🥬" },
+        "Night": { name: "Chamomile Tea", calories: 25, time: "10:00 PM", ingredients: "Chamomile flowers, honey", icon: "🌼" }
+      },
+      nonVegetarian: {
+        "Early Morning": { name: "Green Tea", calories: 40, time: "6:00 AM", ingredients: "Green tea, ginger, lemon", icon: "🍃" },
+        "Morning": { name: "Egg Benedict", calories: 350, time: "7:00 AM", ingredients: "Poached eggs, English muffin, hollandaise", icon: "🥚" },
+        "Mid-Morning": { name: "Protein Shake", calories: 200, time: "10:00 AM", ingredients: "Whey protein, banana, almond milk", icon: "🥛" },
+        "Afternoon": { name: "Mutton Biryani", calories: 520, time: "1:00 PM", ingredients: "Mutton, basmati rice, saffron, yogurt", icon: "🍖" },
+        "Evening": { name: "Grilled Salmon", calories: 380, time: "7:30 PM", ingredients: "Salmon fillet, quinoa, asparagus", icon: "🐟" },
+        "Night": { name: "Warm Milk", calories: 120, time: "10:00 PM", ingredients: "Warm milk, nutmeg", icon: "🥛" }
+      }
     },
-    "Mid-Morning": {
-      name: `${hasNutAllergy ? "Fresh Fruits" : "Mixed Nuts & Fruits"}${dayInfo.suffix}`,
-      calories: 150,
-      time: "10:00 AM", 
-      ingredients: hasNutAllergy ? "Seasonal fruits, seeds" : "Mixed nuts, seasonal fruits, seeds",
-      icon: hasNutAllergy ? "🍎" : "🥜"
+    Wednesday: {
+      vegetarian: {
+        "Early Morning": { name: "Detox Water", calories: 30, time: "6:00 AM", ingredients: "Water, cucumber, mint, lemon", icon: "💧" },
+        "Morning": { name: "Idli Sambar", calories: 290, time: "7:00 AM", ingredients: "Steamed rice cakes, lentil sambar, coconut chutney", icon: "🥞" },
+        "Mid-Morning": { name: "Coconut Water", calories: 80, time: "10:00 AM", ingredients: "Fresh coconut water, mint", icon: "🥥" },
+        "Afternoon": { name: "Chole Bhature", calories: 480, time: "1:00 PM", ingredients: "Chickpea curry, fried bread, onions", icon: "🫓" },
+        "Evening": { name: "Buddha Bowl", calories: 340, time: "7:30 PM", ingredients: "Quinoa, roasted vegetables, tahini dressing", icon: "🍲" },
+        "Night": { name: "Golden Milk", calories: 90, time: "10:00 PM", ingredients: hasDairyAllergy ? "Oat milk, turmeric, cinnamon" : "Warm milk, turmeric, cinnamon", icon: "✨" }
+      },
+      nonVegetarian: {
+        "Early Morning": { name: "Detox Water", calories: 30, time: "6:00 AM", ingredients: "Water, cucumber, mint, lemon", icon: "💧" },
+        "Morning": { name: "Chicken Sandwich", calories: 340, time: "7:00 AM", ingredients: "Grilled chicken, multigrain bread, avocado", icon: "🥪" },
+        "Mid-Morning": { name: "Boiled Eggs", calories: 140, time: "10:00 AM", ingredients: "2 boiled eggs, black pepper, salt", icon: "🥚" },
+        "Afternoon": { name: "Prawn Curry", calories: 420, time: "1:00 PM", ingredients: "Prawns, coconut curry, jasmine rice", icon: "🦐" },
+        "Evening": { name: "Turkey Salad", calories: 300, time: "7:30 PM", ingredients: "Sliced turkey, mixed greens, vinaigrette", icon: "🥗" },
+        "Night": { name: "Protein Tea", calories: 50, time: "10:00 PM", ingredients: "Herbal tea, collagen powder", icon: "🍵" }
+      }
     },
-    "Afternoon": {
-      name: `${["Dal Rice", "Curd Rice", "Sambar Rice", "Rajma Rice", "Chana Rice", "Mixed Veg Rice", "Pulao"][dayInfo.variant]}${dayInfo.suffix}`,
-      calories: 420 + (dayInfo.variant * 15),
-      time: "1:00 PM",
-      ingredients: hasDairyAllergy ? "Rice, dal, vegetables (dairy-free)" : "Rice, dal/curry, vegetables, yogurt, salad",
-      icon: ["🍛", "🍚", "🍲", "🫘", "🍛", "🥗", "🍚"][dayInfo.variant]
+    Thursday: {
+      vegetarian: {
+        "Early Morning": { name: "Ginger Tea", calories: 35, time: "6:00 AM", ingredients: "Fresh ginger, honey, water", icon: "🫚" },
+        "Morning": { name: "Paratha & Curd", calories: 340, time: "7:00 AM", ingredients: "Whole wheat paratha, fresh curd, pickle", icon: "🫓" },
+        "Mid-Morning": { name: "Dates & Nuts", calories: 170, time: "10:00 AM", ingredients: hasNutAllergy ? "Dates, pumpkin seeds" : "Dates, almonds, cashews", icon: "🌰" },
+        "Afternoon": { name: "Palak Paneer", calories: 400, time: "1:00 PM", ingredients: hasDairyAllergy ? "Spinach curry, tofu, roti" : "Spinach curry, paneer, naan", icon: "🥬" },
+        "Evening": { name: "Lentil Soup", calories: 280, time: "7:30 PM", ingredients: "Mixed lentils, vegetables, herbs", icon: "🍜" },
+        "Night": { name: "Ashwagandha Tea", calories: 40, time: "10:00 PM", ingredients: "Ashwagandha powder, warm water, honey", icon: "🌿" }
+      },
+      nonVegetarian: {
+        "Early Morning": { name: "Ginger Tea", calories: 35, time: "6:00 AM", ingredients: "Fresh ginger, honey, water", icon: "🫚" },
+        "Morning": { name: "Omelette", calories: 280, time: "7:00 AM", ingredients: "3-egg omelette, cheese, vegetables", icon: "🍳" },
+        "Mid-Morning": { name: "Cottage Cheese", calories: 150, time: "10:00 AM", ingredients: "Low-fat cottage cheese, berries", icon: "🧀" },
+        "Afternoon": { name: "Beef Stew", calories: 450, time: "1:00 PM", ingredients: "Beef chunks, vegetables, mashed potatoes", icon: "🥩" },
+        "Evening": { name: "Grilled Chicken", calories: 350, time: "7:30 PM", ingredients: "Chicken breast, roasted vegetables", icon: "🍗" },
+        "Night": { name: "Bone Broth", calories: 60, time: "10:00 PM", ingredients: "Slow-cooked bone broth, herbs", icon: "🍲" }
+      }
     },
-    "Evening": {
-      name: `${["Quinoa Curry", "Millet Khichdi", "Vegetable Stir-fry", "Lentil Soup", "Stuffed Roti", "Vegetable Curry", "Bean Salad"][dayInfo.variant]}${dayInfo.suffix}`,
-      calories: 350 + (dayInfo.variant * 20),
-      time: "7:30 PM",
-      ingredients: hasDairyAllergy ? "Grains, vegetables, coconut milk" : "Grains, vegetables, light dairy",
-      icon: ["🍲", "🥣", "🥬", "🍜", "🫓", "🍛", "🥗"][dayInfo.variant]
+    Friday: {
+      vegetarian: {
+        "Early Morning": { name: "Mint Water", calories: 25, time: "6:00 AM", ingredients: "Water, fresh mint, lemon", icon: "🌿" },
+        "Morning": { name: "Dosa Chutney", calories: 320, time: "7:00 AM", ingredients: "Crispy dosa, coconut chutney, sambar", icon: "🌯" },
+        "Mid-Morning": { name: "Green Smoothie", calories: 140, time: "10:00 AM", ingredients: "Spinach, apple, banana, coconut water", icon: "🥤" },
+        "Afternoon": { name: "Biryani", calories: 460, time: "1:00 PM", ingredients: "Vegetable biryani, raita, pickle", icon: "🍚" },
+        "Evening": { name: "Stuffed Bell Peppers", calories: 310, time: "7:30 PM", ingredients: "Bell peppers, quinoa stuffing, herbs", icon: "🫑" },
+        "Night": { name: "Lavender Tea", calories: 20, time: "10:00 PM", ingredients: "Dried lavender, honey", icon: "💜" }
+      },
+      nonVegetarian: {
+        "Early Morning": { name: "Mint Water", calories: 25, time: "6:00 AM", ingredients: "Water, fresh mint, lemon", icon: "🌿" },
+        "Morning": { name: "Bacon & Eggs", calories: 380, time: "7:00 AM", ingredients: "2 strips bacon, scrambled eggs, toast", icon: "🥓" },
+        "Mid-Morning": { name: "Tuna Salad", calories: 190, time: "10:00 AM", ingredients: "Canned tuna, mixed greens, olive oil", icon: "🐟" },
+        "Afternoon": { name: "Lamb Curry", calories: 500, time: "1:00 PM", ingredients: "Lamb curry, basmati rice, naan", icon: "🍖" },
+        "Evening": { name: "Baked Cod", calories: 320, time: "7:30 PM", ingredients: "Cod fillet, herbs, roasted potatoes", icon: "🐟" },
+        "Night": { name: "Protein Milk", calories: 100, time: "10:00 PM", ingredients: "Warm milk, protein powder", icon: "🥛" }
+      }
     },
-    "Night": {
-      name: "Warm Turmeric Milk",
-      calories: 80,
-      time: "10:00 PM",
-      ingredients: "1 glass warm milk, turmeric, honey",
-      icon: "🥛"
+    Saturday: {
+      vegetarian: {
+        "Early Morning": { name: "Jeera Water", calories: 30, time: "6:00 AM", ingredients: "Cumin water, lemon", icon: "🌾" },
+        "Morning": { name: "Pancakes", calories: 350, time: "7:00 AM", ingredients: "Whole wheat pancakes, maple syrup, fruits", icon: "🥞" },
+        "Mid-Morning": { name: "Chia Pudding", calories: 180, time: "10:00 AM", ingredients: "Chia seeds, coconut milk, berries", icon: "🥥" },
+        "Afternoon": { name: "South Indian Thali", calories: 480, time: "1:00 PM", ingredients: "Rice, sambar, rasam, vegetables, curd", icon: "🍽️" },
+        "Evening": { name: "Grilled Vegetables", calories: 290, time: "7:30 PM", ingredients: "Zucchini, eggplant, bell peppers, quinoa", icon: "🍆" },
+        "Night": { name: "Moon Milk", calories: 70, time: "10:00 PM", ingredients: hasDairyAllergy ? "Coconut milk, vanilla, cinnamon" : "Warm milk, vanilla, cinnamon", icon: "🌙" }
+      },
+      nonVegetarian: {
+        "Early Morning": { name: "Jeera Water", calories: 30, time: "6:00 AM", ingredients: "Cumin water, lemon", icon: "🌾" },
+        "Morning": { name: "Sausage Hash", calories: 420, time: "7:00 AM", ingredients: "Chicken sausage, hash browns, eggs", icon: "🍳" },
+        "Mid-Morning": { name: "Smoked Salmon", calories: 160, time: "10:00 AM", ingredients: "Smoked salmon, cream cheese, bagel", icon: "🐟" },
+        "Afternoon": { name: "Duck Curry", calories: 520, time: "1:00 PM", ingredients: "Duck curry, jasmine rice, vegetables", icon: "🦆" },
+        "Evening": { name: "BBQ Chicken", calories: 370, time: "7:30 PM", ingredients: "BBQ chicken breast, coleslaw, corn", icon: "🍗" },
+        "Night": { name: "Casein Shake", calories: 120, time: "10:00 PM", ingredients: "Casein protein, almond milk", icon: "🥛" }
+      }
+    },
+    Sunday: {
+      vegetarian: {
+        "Early Morning": { name: "Warm Water", calories: 20, time: "6:00 AM", ingredients: "Warm water, rock salt, lemon", icon: "💧" },
+        "Morning": { name: "Sunday Special", calories: 380, time: "7:00 AM", ingredients: "Aloo paratha, curd, butter, pickle", icon: "🥔" },
+        "Mid-Morning": { name: "Fresh Juice", calories: 120, time: "10:00 AM", ingredients: "Orange juice, ginger, mint", icon: "🍊" },
+        "Afternoon": { name: "Festive Meal", calories: 500, time: "1:00 PM", ingredients: "Puri, chole, halwa, lassi", icon: "🎉" },
+        "Evening": { name: "Light Khichdi", calories: 260, time: "7:30 PM", ingredients: "Rice, lentils, ghee, vegetables", icon: "🍲" },
+        "Night": { name: "Brahmi Tea", calories: 15, time: "10:00 PM", ingredients: "Brahmi leaves, honey", icon: "🍃" }
+      },
+      nonVegetarian: {
+        "Early Morning": { name: "Warm Water", calories: 20, time: "6:00 AM", ingredients: "Warm water, rock salt, lemon", icon: "💧" },
+        "Morning": { name: "Sunday Brunch", calories: 450, time: "7:00 AM", ingredients: "Eggs benedict, bacon, hash browns", icon: "🍽️" },
+        "Mid-Morning": { name: "Chicken Soup", calories: 130, time: "10:00 AM", ingredients: "Clear chicken broth, vegetables", icon: "🍲" },
+        "Afternoon": { name: "Roast Dinner", calories: 550, time: "1:00 PM", ingredients: "Roast chicken, potatoes, gravy, vegetables", icon: "🍗" },
+        "Evening": { name: "Fish & Chips", calories: 400, time: "7:30 PM", ingredients: "Battered fish, sweet potato fries", icon: "🍟" },
+        "Night": { name: "Relaxing Tea", calories: 25, time: "10:00 PM", ingredients: "Passionflower tea, honey", icon: "🌸" }
+      }
     }
   };
 
-  const allNonVegetarianMeals: Record<string, Meal> = {
-    "Early Morning": {
-      name: "Lemon Water with Honey",
-      calories: 50,
-      time: "6:00 AM",
-      ingredients: "Warm water, lemon juice, honey",
-      icon: "🍯"
-    },
-    "Morning": {
-      name: "Egg White Omelette with Toast",
-      calories: 320,
-      time: "7:00 AM",
-      ingredients: "3 egg whites, 2 whole wheat bread, vegetables, green tea",
-      icon: "🍳"
-    },
-    "Mid-Morning": {
-      name: "Greek Yogurt with Berries",
-      calories: 180,
-      time: "10:00 AM",
-      ingredients: "1 cup Greek yogurt, mixed berries, 1 tbsp honey",
-      icon: "🫐"
-    },
-    "Afternoon": {
-      name: "Grilled Chicken with Quinoa",
-      calories: 480,
-      time: "1:00 PM",
-      ingredients: "150g grilled chicken breast, 1 cup quinoa, steamed vegetables, salad",
-      icon: "🍗"
-    },
-    "Evening": {
-      name: "Fish Curry with Brown Rice",
-      calories: 400,
-      time: "7:30 PM",
-      ingredients: "150g fish, coconut curry, 1 cup brown rice, vegetables",
-      icon: "🐟"
-    },
-    "Night": {
-      name: "Herbal Tea",
-      calories: 30,
-      time: "10:00 PM",
-      ingredients: "Chamomile tea, honey",
-      icon: "🍵"
-    }
-  };
-
-  const baseMeals = isVegetarian ? allVegetarianMeals : allNonVegetarianMeals;
+  const baseMeals = isVegetarian ? 
+    dailyMealPlans[day as keyof typeof dailyMealPlans]?.vegetarian || dailyMealPlans.Monday.vegetarian :
+    dailyMealPlans[day as keyof typeof dailyMealPlans]?.nonVegetarian || dailyMealPlans.Monday.nonVegetarian;
   
   // Filter meals based on preferred meal times
   const filteredMeals: Record<string, Meal> = {};

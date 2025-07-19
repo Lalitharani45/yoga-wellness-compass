@@ -297,7 +297,11 @@ const YogaPlan = ({ experience, style, goals, time }: YogaPlanProps) => {
                     <Button
                       size="lg"
                       className="bg-white text-orange-600 hover:bg-orange-50 rounded-full w-16 h-16"
-                      onClick={() => setActiveVideo(video.id)}
+                      onClick={() => {
+                        setActiveVideo(video.id);
+                        // Open a sample yoga video (you can replace with actual video URLs)
+                        window.open('https://www.youtube.com/watch?v=v7AYKMP6rOE', '_blank');
+                      }}
                     >
                       <Play className="w-8 h-8" />
                     </Button>
